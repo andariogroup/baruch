@@ -57,7 +57,7 @@ Ver `.env.example`. Ningún valor secreto debe ir a Git ni a `NEXT_PUBLIC_*`.
 
 | Variable | Dónde | Notas |
 |----------|-------|-------|
-| `NEXT_PUBLIC_SITE_URL` | Cliente | Origen canónico, sin barra final |
+| `NEXT_PUBLIC_SITE_URL` | Cliente | Origen canónico. En local: `http://localhost:3000`. En producción el sitio usa `https://www.baruchhostal.com` |
 | `NEXT_PUBLIC_BOOKING_ENGINE_URL` | Cliente | URL completa del motor. Vacía = CTA deshabilitado |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Cliente | Dígitos internacionales. Vacío = CTA visible pero deshabilitado |
 | `NEXT_PUBLIC_PHONE` | Cliente | Teléfono de recepción, si es distinto |
@@ -115,7 +115,7 @@ En el proyecto de Vercel → **Settings → Environment Variables**. Copia desde
 
 | Variable | Production | Preview | Notas |
 |----------|------------|---------|-------|
-| `NEXT_PUBLIC_SITE_URL` | **Obligatoria** | Opcional | Origen canónico `https://…`, sin barra final. Nunca `localhost`. Si falta, el build usa el host de Vercel. |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.baruchhostal.com` | Opcional | Canónico confirmado. Si falta en Production, el build igual emite `www.baruchhostal.com`. Nunca `localhost`. |
 | `NEXT_PUBLIC_BOOKING_ENGINE_URL` | Cuando exista | Igual | Vacía = Reservar deshabilitado |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Cuando exista | Igual | Dígitos internacionales |
 | `NEXT_PUBLIC_PHONE` / `EMAIL` / `STREET_ADDRESS` / `POSTAL_CODE` | Si están verificados | Igual | |
@@ -129,7 +129,13 @@ Después de crear o cambiar `NEXT_PUBLIC_*`, hay que **redeploy** (Vercel las in
 
 ### 3. Dominio
 
-Settings → **Domains**. Apunta el dominio del hostal cuando esté autorizado. Alinea `NEXT_PUBLIC_SITE_URL` con ese dominio y vuelve a desplegar.
+Settings → **Domains**:
+
+1. Añade `www.baruchhostal.com` y déjalo como dominio **primario**.
+2. Añade `baruchhostal.com` (apex). El sitio redirige el apex a `www` (301).
+3. En Production, `NEXT_PUBLIC_SITE_URL=https://www.baruchhostal.com`.
+
+Canonical, hreflang, sitemap, `robots.txt`, Open Graph y JSON-LD usan ese origen. Los preview siguen en `*.vercel.app` y no se indexan.
 
 ### 4. Comprobar el deploy
 
@@ -140,7 +146,7 @@ Settings → **Domains**. Apunta el dominio del hostal cuando esté autorizado. 
 
 El pipeline de CI (lint, typecheck, tests, build, Playwright) sigue corriendo en GitHub; Vercel solo construye y publica.
 
-No se publica un dominio de producción desde este repositorio hasta contar con autorización, dominio y URL real del motor.
+No se publica un dominio de preview como canónico. El origen de producción confirmado es `https://www.baruchhostal.com`.
 
 ## Documentación de producto
 

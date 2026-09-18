@@ -12,7 +12,7 @@
 | TBD-002 | Número de WhatsApp | CTA oculto hasta `NEXT_PUBLIC_WHATSAPP_NUMBER` |
 | TBD-003 | NAP exacto (calle, teléfono, email) | Solo se publica Buritaca, Magdalena, Colombia |
 | TBD-004 | Coordenadas | El mapa apunta a la localidad, no a un pin |
-| TBD-005 | Dominio definitivo | `NEXT_PUBLIC_SITE_URL` usa localhost en desarrollo |
+| TBD-005 | Dominio definitivo | **Confirmado 18 sep 2026:** `https://www.baruchhostal.com`. Canonical, sitemap, Open Graph y JSON-LD lo usan en producción. El apex redirige a `www`. |
 | TBD-006 | Fotografía real | Assets temporales gobernados como `AI_GENERATED` |
 | TBD-007 | Logo vectorial | PNG en uso en header, footer y favicon; el vector sigue pendiente |
 

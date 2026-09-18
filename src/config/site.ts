@@ -10,8 +10,11 @@ import {
   optionalHttpUrl,
   optionalPhone,
   optionalText,
+  PRODUCTION_SITE_URL,
   resolveSiteUrl,
 } from '@/lib/config/env';
+
+export { PRODUCTION_SITE_URL };
 
 export const LOCALES = ['es', 'en'] as const;
 
@@ -23,10 +26,22 @@ export function isLocale(value: string): value is Locale {
   return (LOCALES as readonly string[]).includes(value);
 }
 
-/** Production origin. Overridden per environment; never guessed at runtime. */
+/**
+ * Canonical origin for this build.
+ *
+ * Production (including a local `next build`) uses the confirmed www host.
+ * Vercel previews keep their `*.vercel.app` host so they cannot compete in
+ * search. Local `next dev` stays on localhost unless the env var is set.
+ */
 export const SITE_URL = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL, {
-  env: process.env.VERCEL_ENV,
-  productionUrl: process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  env:
+    process.env.VERCEL_ENV === 'preview' ||
+    process.env.VERCEL_ENV === 'development'
+      ? process.env.VERCEL_ENV
+      : process.env.VERCEL_ENV === 'production' ||
+          process.env.NODE_ENV === 'production'
+        ? 'production'
+        : process.env.VERCEL_ENV,
   url: process.env.VERCEL_URL,
 });
 

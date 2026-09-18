@@ -89,21 +89,36 @@ describe('site environment configuration', () => {
 });
 
 describe('resolveSiteUrl', () => {
-  it('prefers an explicit public origin', async () => {
-    const { resolveSiteUrl } = await import('@/lib/config/env');
+  it('canonicalizes the confirmed www origin, including the apex host', async () => {
+    const { resolveSiteUrl, PRODUCTION_SITE_URL } = await import(
+      '@/lib/config/env'
+    );
+    expect(resolveSiteUrl('https://www.baruchhostal.com/')).toBe(
+      PRODUCTION_SITE_URL,
+    );
     expect(resolveSiteUrl('https://baruchhostal.com/')).toBe(
-      'https://baruchhostal.com',
+      PRODUCTION_SITE_URL,
+    );
+    expect(resolveSiteUrl('baruchhostal.com')).toBe(PRODUCTION_SITE_URL);
+  });
+
+  it('keeps localhost and its port when set explicitly', async () => {
+    const { resolveSiteUrl } = await import('@/lib/config/env');
+    expect(resolveSiteUrl('http://localhost:3000')).toBe(
+      'http://localhost:3000',
     );
   });
 
-  it('uses the Vercel production host when no explicit origin is set', async () => {
-    const { resolveSiteUrl } = await import('@/lib/config/env');
+  it('uses the confirmed www origin in production even without an env var', async () => {
+    const { resolveSiteUrl, PRODUCTION_SITE_URL } = await import(
+      '@/lib/config/env'
+    );
     expect(
       resolveSiteUrl(undefined, {
         env: 'production',
-        productionUrl: 'baruchhostal.com',
+        productionUrl: 'baruch-hostal-web.vercel.app',
       }),
-    ).toBe('https://baruchhostal.com');
+    ).toBe(PRODUCTION_SITE_URL);
   });
 
   it('uses the deployment host on Vercel previews', async () => {

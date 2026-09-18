@@ -1,4 +1,8 @@
 import type { NextConfig } from 'next';
+import {
+  PRODUCTION_SITE_APEX,
+  PRODUCTION_SITE_URL,
+} from './src/lib/config/env';
 
 /**
  * Security headers.
@@ -62,6 +66,22 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [{ source: '/:path*', headers: SECURITY_HEADERS }];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        has: [{ type: 'host', value: PRODUCTION_SITE_APEX }],
+        destination: PRODUCTION_SITE_URL,
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: PRODUCTION_SITE_APEX }],
+        destination: `${PRODUCTION_SITE_URL}/:path*`,
+        permanent: true,
+      },
+    ];
   },
 };
 

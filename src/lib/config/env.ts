@@ -50,20 +50,34 @@ export function optionalCoordinates(
   return { latitude, longitude };
 }
 
+/** Confirmed public origin. Apex (`baruchhostal.com`) canonicalizes here. */
+export const PRODUCTION_SITE_HOST = 'www.baruchhostal.com';
+export const PRODUCTION_SITE_APEX = 'baruchhostal.com';
+export const PRODUCTION_SITE_URL = `https://${PRODUCTION_SITE_HOST}`;
+
 function stripTrailingSlash(value: string): string {
   return value.replace(/\/$/, '');
 }
 
-function httpsOrigin(host: string): string {
-  const hostname = host.replace(/^https?:\/\//, '').replace(/\/$/, '');
-  return `https://${hostname}`;
+function canonicalizeOrigin(value: string): string {
+  const withProtocol = value.includes('://') ? value : `https://${value}`;
+  const parsed = new URL(withProtocol);
+  const hostname = parsed.hostname;
+
+  if (hostname === PRODUCTION_SITE_APEX || hostname === PRODUCTION_SITE_HOST) {
+    return PRODUCTION_SITE_URL;
+  }
+
+  return stripTrailingSlash(parsed.origin);
 }
 
 /**
  * Canonical origin for metadata, sitemap and JSON-LD.
  *
- * Prefers `NEXT_PUBLIC_SITE_URL`. On Vercel, falls back to the production
- * domain or the current deployment host so previews never emit localhost.
+ * Prefers `NEXT_PUBLIC_SITE_URL`. Apex and www both resolve to the confirmed
+ * `www` origin so crawlers never see a split host. Production builds emit
+ * that origin even when the env var is missing; Vercel previews keep their
+ * deployment host (and stay noindex).
  */
 export function resolveSiteUrl(
   explicit?: string,
@@ -74,15 +88,30 @@ export function resolveSiteUrl(
   },
 ): string {
   const configured = explicit?.trim();
-  if (configured) return stripTrailingSlash(configured);
+  if (configured) {
+    try {
+      return canonicalizeOrigin(configured);
+    } catch {
+      return stripTrailingSlash(configured);
+    }
+  }
 
-  if (vercel?.env === 'production' && vercel.productionUrl?.trim()) {
-    return httpsOrigin(vercel.productionUrl);
+  if (vercel?.env === 'production') {
+    return PRODUCTION_SITE_URL;
   }
 
   if (vercel?.url?.trim()) {
-    return httpsOrigin(vercel.url);
+    try {
+      return canonicalizeOrigin(vercel.url);
+    } catch {
+      return httpsFallback(vercel.url);
+    }
   }
 
   return 'http://localhost:3000';
+}
+
+function httpsFallback(host: string): string {
+  const hostname = host.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  return `https://${hostname}`;
 }
