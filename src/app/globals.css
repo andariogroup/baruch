@@ -1,26 +1,154 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/**
+ * BARUCH design tokens — "eco-boutique caribeño contemporáneo".
+ *
+ * Palette values are derived from the BARUCH logo as documented in the master
+ * spec. They are approximate because only a compressed JPG was available;
+ * re-derive them from the vector logo before locking the identity.
+ *
+ * The brand turquoise and green reach roughly 3.4:1 and 3.8:1 against white,
+ * which is enough for large text and non-text UI but not for body copy. The
+ * `-strong` variants exist for text, buttons and icons that need WCAG AA.
+ */
+@theme {
+  --color-ink: #1f2929;
+  --color-ink-muted: #55605f;
+  --color-ivory: #faf8f2;
+  --color-sand: #f3efe5;
+  --color-sand-deep: #e7e0d0;
+
+  --color-lagoon: #159aa0;
+  --color-lagoon-strong: #0c6e73;
+  --color-lagoon-deep: #08545a;
+  --color-lagoon-wash: #e6f3f3;
+
+  --color-jungle: #6b8f45;
+  --color-jungle-strong: #4e6b31;
+  --color-jungle-wash: #eef2e6;
+
+  --color-sun: #f4b800;
+  --color-ember: #f47c20;
+  /* Accent orange only reaches 2.6:1 on ivory, so error text and borders use
+     this darker relative instead. */
+  --color-alert: #a03a08;
+
+  /* WhatsApp channel — darker than the brand lime so ivory labels meet AA. */
+  --color-whatsapp: #25d366;
+  --color-whatsapp-strong: #0e7a6d;
+  --color-whatsapp-deep: #075e54;
+
+  --font-display: var(--font-dm-serif-display), ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-control: 0.875rem;
+  --radius-card: 1.25rem;
+  --radius-gallery: 1.5rem;
+  --radius-shell: 2rem;
+
+  --shadow-soft: 0 1px 2px rgb(31 41 41 / 0.04), 0 8px 24px -12px rgb(31 41 41 / 0.12);
+  --shadow-lifted: 0 2px 4px rgb(31 41 41 / 0.05), 0 20px 40px -20px rgb(31 41 41 / 0.2);
+
+  --ease-calm: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@custom-variant on-dark (.on-dark &);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-lagoon-strong);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Keep the focus ring visible over dark imagery such as the hero. */
+  .on-dark :focus-visible {
+    outline-color: var(--color-ivory);
+  }
+
+  ::selection {
+    background-color: var(--color-lagoon-wash);
+    color: var(--color-lagoon-deep);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* Reveal-on-scroll base state. Content is visible by default so it never
+     depends on JavaScript; the observer only adds the transition. */
+  .reveal {
+    opacity: 1;
+  }
+
+  .reveal-armed {
+    transform: translateY(1.25rem);
+    transition: transform 600ms var(--ease-calm);
+  }
+
+  .reveal-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .whatsapp-pulse {
+    animation: whatsapp-pulse 2.4s var(--ease-calm) infinite;
+  }
+}
+
+@keyframes whatsapp-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  70%,
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal-armed {
+    transform: none;
+  }
+
+  .whatsapp-pulse {
+    animation: none;
+  }
+}
+
+body[data-menu-open='true'] .whatsapp-float {
+  display: none;
 }

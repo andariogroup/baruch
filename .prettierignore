@@ -1,0 +1,11 @@
+.next
+out
+node_modules
+coverage
+playwright-report
+test-results
+package-lock.json
+*.tsbuildinfo
+public/images/generated/*.webp
+docs/*.docx
+docs/*.md

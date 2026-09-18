@@ -1,0 +1,60 @@
+{
+  "bucket": "generated",
+  "assets": [
+    {
+      "file": "/images/generated/hero-jungle-coast.webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "/images/generated/caribbean-sunset.webp",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "file": "/images/generated/restaurant-garden.webp",
+      "width": 1152,
+      "height": 864
+    },
+    {
+      "file": "/images/generated/hammock-garden.webp",
+      "width": 1152,
+      "height": 864
+    },
+    {
+      "file": "/images/generated/buritaca-river.webp",
+      "width": 1152,
+      "height": 864
+    },
+    {
+      "file": "/images/generated/room-private-double.webp",
+      "width": 864,
+      "height": 1152
+    },
+    {
+      "file": "/images/generated/room-private-triple.webp",
+      "width": 864,
+      "height": 1152
+    },
+    {
+      "file": "/images/generated/room-private-quad.webp",
+      "width": 864,
+      "height": 1152
+    },
+    {
+      "file": "/images/generated/room-private-family.webp",
+      "width": 864,
+      "height": 1152
+    },
+    {
+      "file": "/images/generated/room-shared-six.webp",
+      "width": 864,
+      "height": 1152
+    },
+    {
+      "file": "/images/generated/room-shared-seven.webp",
+      "width": 864,
+      "height": 1152
+    }
+  ]
+}

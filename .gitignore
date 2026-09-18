@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
 
 # next.js
 /.next/
@@ -22,7 +26,9 @@
 
 # misc
 .DS_Store
+Thumbs.db
 *.pem
+.eslintcache
 
 # debug
 npm-debug.log*
@@ -30,8 +36,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — keep the example committed
+.env
+.env.*
+!.env.example
 
 # vercel
 .vercel
